@@ -1,0 +1,192 @@
+<div class="custom-spinner-wrapper" *ngIf="(dataSource.loading$ | async) || show_spinner">
+  <mat-spinner strokeWidth="1" [diameter]="65"></mat-spinner>
+</div>
+
+<div fxLayout="column" class="card">
+  <div fxFlex="1 1 100" class="card-body pt-3 pb-3">
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="space-between center" class="mb-4">
+      <div fxFlex="1 1 100" fxLayout="column" fxLayout.gt-xs="row" class="w-100">
+        <div fxFlex="1 1 100" fxFlex.gt-sm="1 1 250px" fxLayoutAlign="space-between center" fxLayoutAlign.gt-md="start center" class="p-relative w-100 my-1 me-2">
+          <span class="svg-icon svg-icon-1 search-svg-icon p-absolute ms-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
+                transform="rotate(45 17.0365 15.1223)" fill="currentColor"></rect>
+              <path
+                d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                fill="currentColor"></path>
+            </svg>
+          </span>
+          <input type="text" [formControl]="searchControl" class="form-control form-control-solid ps-14 w-100">
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive" [ngClass]="dataSource.show_table ? '' : 'd-none'">
+      <table mat-table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" matSort
+        matSortActive="firstName" matSortDirection="asc" matSortDisableClear aria-label="Elements"
+        [dataSource]="dataSource">
+
+        <!-- Applicator Column -->
+        <ng-container matColumnDef="applicator">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="ps-0">Applicator</th>
+          <td mat-cell *matCellDef="let row" class="ps-0">
+            <div fxLayout="row nowrap" fxLayoutAlign="start center">
+              <div fxLayoutAlign="space-between center" class="symbol symbol-45px me-3">
+                <span class="symbol-label badge-light-success fw-bold">
+                  {{ row.firstName?.charAt(0) | uppercase}}{{ row.lastName?.charAt(0) | uppercase}}
+                </span>
+              </div>
+              <div fxLayout="column nowrap" fxLayoutAlign="center start">
+                <span class="text-dark fw-semibold">{{ row.firstName }} {{ row.lastName }}</span>
+                <span class="text-muted">{{ row.email }}</span>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Job Title Column -->
+        <ng-container matColumnDef="jobTitle">
+          <th fxHide fxShow.gt-sm mat-header-cell *matHeaderCellDef mat-sort-header>Job Title
+          </th>
+          <td fxHide fxShow.gt-sm mat-cell *matCellDef="let row" class="text-muted">{{ row.jobTitle ? row.jobTitle :
+            'N/A' }}</td>
+        </ng-container>
+
+        <!-- Is Verified Column -->
+        <ng-container matColumnDef="isVerified">
+          <th fxHide fxShow.gt-xs mat-header-cell *matHeaderCellDef mat-sort-header class=""
+            style="width: 100px !important;">Verified</th>
+          <td fxHide fxShow.gt-xs mat-cell *matCellDef="let row" class="" style="width: 100px !important;">
+            <span *ngIf="row.isVerified" class="svg-icon svg-icon-muted svg-icon-2hx badge-light-success"><svg
+                width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                <path
+                  d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z"
+                  fill="currentColor" />
+              </svg>
+            </span>
+            <span *ngIf="!row.isVerified" class="svg-icon svg-icon-muted svg-icon-2hx badge-light-danger"><svg
+                width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                <rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)"
+                  fill="currentColor" />
+                <rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)"
+                  fill="currentColor" />
+              </svg>
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th fxHide fxShow.gt-xs mat-header-cell *matHeaderCellDef mat-sort-header class="">Status
+          </th>
+          <td fxHide fxShow.gt-xs mat-cell *matCellDef="let row" class="text-muted fw-semibold">
+            <span class="badge" [ngClass]="{'badge-light-primary' : row.isActive === true,
+                                            'badge-light-info' : row.isActive === false}">
+              {{ row.isActive === true ? 'Active' : 'Suspended' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Buttons Column -->
+        <ng-container matColumnDef="options">
+          <th mat-header-cell *matHeaderCellDef class="pe-0 text-end">Actions</th>
+          <td mat-cell *matCellDef="let row" class="pe-0">
+            <div fxLayoutAlign="end center">
+              <div fxHide fxShow.gt-sm fxLayoutAlign="end center">
+                <button class="btn btn-icon btn-active-color-primary btn-sm me-1"
+                  [ngClass]="row.isVerified ? 'btn-secondary' : 'btn-light'" matTooltip="Resend email" [disabled]="row.isVerified ? true : false">
+                  <span class="svg-icon svg-icon-3">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M6 8.725C6 8.125 6.4 7.725 7 7.725H14L18 11.725V12.925L22 9.725L12.6 2.225C12.2 1.925 11.7 1.925 11.4 2.225L2 9.725L6 12.925V8.725Z"
+                        fill="currentColor"></path>
+                      <path opacity="0.3"
+                        d="M22 9.72498V20.725C22 21.325 21.6 21.725 21 21.725H3C2.4 21.725 2 21.325 2 20.725V9.72498L11.4 17.225C11.8 17.525 12.3 17.525 12.6 17.225L22 9.72498ZM15 11.725H18L14 7.72498V10.725C14 11.325 14.4 11.725 15 11.725Z"
+                        fill="currentColor"></path>
+                    </svg>
+                  </span>
+                </button>
+                <button class="btn btn-icon btn-light btn-active-color-primary btn-sm me-1" matTooltip="View Details">
+                  <span class="svg-icon svg-icon-3">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M17.5 11H6.5C4 11 2 9 2 6.5C2 4 4 2 6.5 2H17.5C20 2 22 4 22 6.5C22 9 20 11 17.5 11ZM15 6.5C15 7.9 16.1 9 17.5 9C18.9 9 20 7.9 20 6.5C20 5.1 18.9 4 17.5 4C16.1 4 15 5.1 15 6.5Z"
+                        fill="currentColor"></path>
+                      <path opacity="0.3"
+                        d="M17.5 22H6.5C4 22 2 20 2 17.5C2 15 4 13 6.5 13H17.5C20 13 22 15 22 17.5C22 20 20 22 17.5 22ZM4 17.5C4 18.9 5.1 20 6.5 20C7.9 20 9 18.9 9 17.5C9 16.1 7.9 15 6.5 15C5.1 15 4 16.1 4 17.5Z"
+                        fill="currentColor"></path>
+                    </svg>
+                  </span>
+                </button>
+
+                <button class="btn btn-icon btn-light btn-active-color-primary btn-sm me-1" matTooltip="Edit Applicator">
+                  <span class="svg-icon svg-icon-3">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path opacity="0.3"
+                        d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z"
+                        fill="currentColor"></path>
+                      <path
+                        d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z"
+                        fill="currentColor"></path>
+                    </svg>
+                  </span>
+                </button>
+                <button class="btn btn-icon btn-light btn-active-color-primary btn-sm me-1">
+                  <span class="svg-icon svg-icon-3" *ngIf="!row.isActive">
+                    <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <g data-name="Layer 2">
+                        <g data-name="radio-button-on" fill="currentColor">
+                          <rect width="24" height="24" opacity="0" />
+                          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
+                          <path d="M12 7a5 5 0 1 0 5 5 5 5 0 0 0-5-5z" />
+                        </g>
+                      </g>
+                    </svg>
+                  </span>
+                  <span class="svg-icon svg-icon-3" *ngIf="row.isActive">
+                    <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <g id="web-app" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g id="disabled" fill="currentColor">
+                          <path
+                            d="M12,22 C17.5228475,22 22,17.5228475 22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 Z M7.09435615,18.3198574 L18.3198574,7.09435615 C19.3729184,8.44903985 20,10.1512885 20,12 C20,16.418278 16.418278,20 12,20 C10.1512885,20 8.44903985,19.3729184 7.09435615,18.3198574 Z M5.68014258,16.9056439 C4.62708161,15.5509601 4,13.8487115 4,12 C4,7.581722 7.581722,4 12,4 C13.8487115,4 15.5509601,4.62708161 16.9056439,5.68014258 L5.68014258,16.9056439 Z"
+                            id="Shape"></path>
+                        </g>
+                      </g>
+                    </svg>
+                  </span>
+                </button>
+                <button class="btn btn-icon btn-light btn-active-color-primary btn-sm"
+                  matTooltip="Add Zip Codes">
+                  <span class="svg-icon svg-icon-3">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path opacity="0.3"
+                        d="M18.0624 15.3453L13.1624 20.7453C12.5624 21.4453 11.5624 21.4453 10.9624 20.7453L6.06242 15.3453C4.56242 13.6453 3.76242 11.4453 4.06242 8.94534C4.56242 5.34534 7.46242 2.44534 11.0624 2.04534C15.8624 1.54534 19.9624 5.24534 19.9624 9.94534C20.0624 12.0453 19.2624 13.9453 18.0624 15.3453Z"
+                        fill="currentColor" />
+                      <path
+                        d="M12.0624 13.0453C13.7193 13.0453 15.0624 11.7022 15.0624 10.0453C15.0624 8.38849 13.7193 7.04535 12.0624 7.04535C10.4056 7.04535 9.06241 8.38849 9.06241 10.0453C9.06241 11.7022 10.4056 13.0453 12.0624 13.0453Z"
+                        fill="currentColor" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div fxHide.gt-sm fxLayoutAlign="end center">
+              </div>
+            </div>
+
+
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <mat-paginator #paginator [length]="dataSource.totalApplicatorsCount$ | async" [pageSize]="10"
+        [pageSizeOptions]="[10, 25, 50, 100]">
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+
